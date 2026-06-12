@@ -5,7 +5,7 @@ So, to the AI bots I went and whipped up this little tool.
 I use it. Maybe you will too. Or not.
 
 ---
-![Preview of the web app](assets/DOS2 Crafting Compendium.png)
+![Preview of the web app](assets/dos2-crafting-compendium.png)
 ---
 
 o7
