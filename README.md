@@ -6,7 +6,9 @@ So, to the AI bots I went and whipped up this little tool.
 I use it. Maybe you will too. Or not.
 
 ---
+
 ![Preview of the web app](assets/dos2-crafting-compendium.png)
+
 ---
 
 If there are issues, missing or faulty recipes, please open an issues and I'll try to fix it!
