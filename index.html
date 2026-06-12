@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOS2 Crafting Compendium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0d0b08;
+    --bg2:       #141109;
+    --bg3:       #1c1710;
+    --border:    #3a2e1a;
+    --border2:   #5a4520;
+    --gold:      #c9952a;
+    --gold2:     #e8b84b;
+    --gold-dim:  #7a5c18;
+    --amber:     #d4752a;
+    --text:      #d8cdb8;
+    --text-dim:  #8a7d68;
+    --text-muted:#5a5040;
+    --red:       #c04040;
+    --green:     #5a9a5a;
+    --blue:      #4a7aaa;
+    --row-hover: rgba(201,149,42,0.06);
+    --row-alt:   rgba(255,255,255,0.015);
+    --shadow:    0 4px 32px rgba(0,0,0,0.6);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 40% at 50% -10%, rgba(201,149,42,0.07) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Ccircle cx='30' cy='30' r='0.5' fill='%23c9952a' opacity='0.08'/%3E%3C/svg%3E");
+  }
+
+  /* ─── HEADER ─────────────────────────────────────────── */
+  header {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-ornament {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1rem; margin-bottom: 0.75rem;
+  }
+  .header-ornament::before,
+  .header-ornament::after {
+    content: '';
+    flex: 1; max-width: 160px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim));
+  }
+  .header-ornament::after { background: linear-gradient(90deg, var(--gold-dim), transparent); }
+  .header-diamond {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 12px var(--gold);
+  }
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--gold2);
+    text-shadow: 0 0 40px rgba(201,149,42,0.4), 0 2px 4px rgba(0,0,0,0.8);
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 1.35rem;
+    letter-spacing: 0.05em;
+    margin-top: 0.4rem;
+  }
+  .source-credit {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+  .source-credit a { color: var(--gold-dim); text-decoration: none; }
+  .source-credit a:hover { color: var(--gold); }
+
+  /* ─── CONTROLS ────────────────────────────────────────── */
+  .controls {
+    max-width: 1200px;
+    margin: 1.75rem auto 0;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    align-items: end;
+  }
+  @media (max-width: 700px) {
+    .controls { grid-template-columns: 1fr; }
+  }
+  .control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  input[type="text"], select {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    appearance: none;
+  }
+  input[type="text"]:focus, select:focus {
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 0 2px rgba(201,149,42,0.15);
+  }
+  input::placeholder { color: var(--text-muted); font-style: italic; }
+
+  .search-wrapper { position: relative; }
+  .search-icon {
+    position: absolute; right: 0.75rem; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted); pointer-events: none; font-size: 0.9rem;
+  }
+  .clear-btn {
+    position: absolute; right: 2.2rem; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); font-size: 1rem; line-height: 1;
+    display: none;
+  }
+  .clear-btn:hover { color: var(--gold); }
+
+  .mode-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .mode-toggle button {
+    flex: 1;
+    background: var(--bg3);
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.65rem 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .mode-toggle button + button { border-left: 1px solid var(--border); }
+  .mode-toggle button.active {
+    background: var(--gold-dim);
+    color: var(--gold2);
+  }
+
+  /* ─── STATS BAR ───────────────────────────────────────── */
+  .stats-bar {
+    max-width: 1200px;
+    margin: 1.2rem auto 0;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.02rem;
+    color: var(--text-muted);
+    font-style: italic;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .stats-bar span em { color: var(--gold-dim); font-style: normal; }
+
+  .legend {
+    display: flex; gap: 1rem; font-style: normal; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.3rem; }
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-family: 'Cinzel', serif;
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
+  .badge-mod { background: rgba(90,154,90,0.2); color: var(--green); border: 1px solid rgba(90,154,90,0.4); }
+  .badge-herb { background: rgba(74,122,170,0.2); color: var(--blue); border: 1px solid rgba(74,122,170,0.4); }
+
+  /* ─── TABLE CONTAINER ────────────────────────────────── */
+  .table-wrap {
+    max-width: 1200px;
+    margin: 1rem auto 4rem;
+    padding: 0 1.5rem;
+  }
+
+  /* ─── CATEGORY SECTION ───────────────────────────────── */
+  .category-section { margin-bottom: 2.5rem; }
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .category-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .category-count {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .category-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ─── TABLE ───────────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  thead th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  thead th:hover { color: var(--gold); }
+  thead th.sorted { color: var(--gold); }
+  thead th .sort-arrow { margin-left: 0.3rem; opacity: 0.7; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(58,46,26,0.4);
+    transition: background 0.15s;
+  }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr.highlight { background: rgba(201,149,42,0.08); }
+
+  td {
+    padding: 0.5rem 0.75rem;
+    vertical-align: top;
+    color: var(--text);
+  }
+  td.result-cell {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--gold2);
+  }
+  td.ingredient-cell {
+    color: var(--text-dim);
+    font-size: 1rem;
+  }
+  td.station-cell {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  mark {
+    background: rgba(201,149,42,0.3);
+    color: var(--gold2);
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  /* ─── EMPTY STATE ─────────────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-muted);
+  }
+  .empty-state .empty-icon { font-size: 2rem; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-state p { font-style: italic; }
+
+  /* ─── FOOTER ──────────────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    font-style: italic;
+  }
+  footer a { color: var(--gold-dim); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-ornament"><div class="header-diamond"></div></div>
+  <h1>DOS2 Crafting Compendium</h1>
+  <p class="subtitle">Divinity: Original Sin 2 — Complete Recipe Reference</p>
+  <p class="source-credit">Data from <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=1137514488" target="_blank">Mellarius's Steam Guide</a> (700+ recipes)</p>
+</header>
+
+<div class="controls">
+  <div class="control-group" style="grid-column: span 3;">
+    <label for="searchInput">Search</label>
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" placeholder="result, ingredient, station…" autocomplete="off">
+      <button class="clear-btn" id="clearBtn" title="Clear search">✕</button>
+      <span class="search-icon">⌕</span>
+    </div>
+  </div>
+
+  <div class="control-group" style="grid-column: span 3;">
+    <label for="categoryFilter">Category</label>
+    <select id="categoryFilter"></select>
+  </div>
+
+  <div class="control-group" style="grid-column: span 2;">
+    <label>Search mode</label>
+    <div class="mode-toggle">
+      <button id="modeAll" class="active">All</button>
+      <button id="modeResult">Result</button>
+      <button id="modeIngredient">Ingredient</button>
+    </div>
+  </div>
+
+  <div class="control-group" style="grid-column: span 2;">
+    <label>Group By</label>
+    <div class="mode-toggle">
+      <button id="groupCategory" class="active">Category</button>
+      <button id="groupIngredient">Ingredient</button>
+    </div>
+  </div>
+
+  <div class="control-group" style="grid-column: span 2;">
+    <label>Gift Bags</label>
+    <div class="mode-toggle" style="background: var(--bg3);">
+      <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; color: var(--text-dim); font-family: 'Cinzel', serif; font-size: 0.7rem; padding: 0.65rem 0.8rem; margin: 0; text-transform: uppercase; border-right: 1px solid var(--border);">
+        <input type="checkbox" id="showCrafters" checked style="margin: 0; cursor: pointer;"> Crafter's Kit
+      </label>
+      <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; color: var(--text-dim); font-family: 'Cinzel', serif; font-size: 0.7rem; padding: 0.65rem 0.8rem; margin: 0; text-transform: uppercase;">
+        <input type="checkbox" id="showHerb" checked style="margin: 0; cursor: pointer;"> Herb Gardens
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <span id="statsText">Loading…</span>
+  <div class="legend">
+    <div class="legend-item"><span class="badge badge-mod">*</span> Crafter's Kit (Gift Bag)</div>
+    <div class="legend-item"><span class="badge badge-herb">**</span> Herb Garden (Gift Bag)</div>
+  </div>
+</div>
+
+<div class="table-wrap" id="tableWrap"></div>
+
+<footer>
+  DOS2 Crafting Compendium · Data by <a href="https://steamcommunity.com/id/mellarius" target="_blank">Mellarius</a> · Search by result or ingredient · <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=1137514488" target="_blank">Original Guide</a>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// RECIPE DATA
+// Format: { result, ingredients: [], station, category, mod }
+// mod: 0 = base game, 1 = Crafter's Kit (*), 2 = Herb Garden (**)
+// ─────────────────────────────────────────────────────────────────────────────
+const RAW = [
+  // TOOLS & FURNITURE
+  {r:"Backpack",i:["Leather Scraps","Rope"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Boiling Pot",i:["Cooking Pot","Bucket of Water"],s:"Campfire",c:"Tools & Furniture",m:0},
+  {r:"Bucket of Water",i:["Bucket","Water Barrel"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Cooking Station",i:["Cooking Pot"],s:"Campfire/Bonfire",c:"Tools & Furniture",m:0},
+  {r:"Crafter's Kit",i:["Metal Scraps","Wood Chips","Repair Hammer"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Glowing Idol of Rebirth",i:["Resurrection Scroll","Ashen Idol of Rebirth"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Improvised Shovel",i:["Long Branch","Bowl"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Lockpicks (×4)",i:["Nails","Any Hammer"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Lockpicks",i:["Soap","Key"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Lockpicks",i:["Needle","Needle"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Lockpicks",i:["Any Metal","Crafter's Kit"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Nails",i:["Scale Scraps","Tongs"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Needle and Thread",i:["Needle","Thread"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Silver Lever Shaft",i:["Silver Bar/Ore or Silver Cup/Glass"],s:"Ancient Forge",c:"Tools & Furniture",m:0},
+  {r:"Trap Disarming Kit",i:["Tongs","A Sharp Piece of Metal"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Bucket",i:["Water Barrel"],s:"",c:"Tools & Furniture",m:0},
+  {r:"Barrel",i:["Any Wood","Nails","Crafter's Kit"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Blessed Water Barrel",i:["Water Barrel","Life Essence (Any Quality)"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Cursed Oil Barrel",i:["Oil Barrel","Tormented Soul (Any Quality)"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Oil Barrel",i:["Empty Barrel"],s:"Oil Pump",c:"Tools & Furniture",m:0},
+  {r:"Oil Barrel",i:["Any Wood","Any Oil Source","Crafter's Kit"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Ooze Barrel",i:["Any Wood","Any Poison Source","Crafter's Kit"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Water Barrel",i:["Any Wood","Any Water Source","Crafter's Kit"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Trap Mechanism",i:["Fuse","Metal Scraps","Crafter's Kit"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Dazzler Trap",i:["Flashbang Grenade","Trap Mechanism"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Displacer Trap",i:["Teleportation Scroll","Trap Mechanism", "Empty Canister"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Firestorm Trap",i:["Firestorm Grenade","Trap Mechanism"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Nailbomb Trap",i:["Nailbomb Grenade","Trap Mechanism"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Poison Gas Trap",i:["Poison Cloud Grenade","Trap Mechanism"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Smoke Trap",i:["Smoke Grenade","Trap Mechanism"],s:"",c:"Tools & Furniture",m:1},
+  {r:"Undeployed Thunderbolt Trap",i:["Thunderbolt Grenade","Trap Mechanism"],s:"",c:"Tools & Furniture",m:1},
+
+  // MATERIALS
+  {r:"Bonedust",i:["Bone/Skull/Chew Toy","Mortar and Pestle"],s:"",c:"Materials",m:0},
+  {r:"Bottle Filled With Oil",i:["Empty Bottle","Any Oil Source"],s:"",c:"Materials",m:0},
+  {r:"Broken Bottle",i:["Empty Bottle","Any Hammer"],s:"",c:"Materials",m:0},
+  {r:"Cloth Scraps",i:["Bed Linen","Any Cutting Tool"],s:"",c:"Materials",m:0},
+  {r:"Empty Canister",i:["Metal Scraps","Metal Scraps","Crafter's Kit"],s:"",c:"Materials",m:1},
+  {r:"Feather",i:["Pillow","Any Cutting Tool"],s:"",c:"Materials",m:0},
+  {r:"Fuse",i:["Rope","Rope"],s:"",c:"Materials",m:0},
+  {r:"Fuse",i:["Rope","Any Cutting Tool"],s:"",c:"Materials",m:1},
+  {r:"Fuse",i:["Rat's Tail","Any Oil Source"],s:"",c:"Materials",m:1},
+  {r:"Leather Cover",i:["Leather Scraps","Leather Scraps","Any Cutting Tool"],s:"",c:"Materials",m:2},
+  {r:"Leather Scraps",i:["Animal Hide","Any Cutting Tool"],s:"",c:"Materials",m:0},
+  {r:"Long Branch (×2) and Wood Chips",i:["Log","Any Cutting Tool/Bench Saw"],s:"Bench Saw",c:"Materials",m:0},
+  {r:"Pixie Dust",i:["Bonedust","Stardust"],s:"",c:"Materials",m:0},
+  {r:"Pouch of Superior Pixie Dust",i:["Bonedust","Pouch of Superior Stardust"],s:"",c:"Materials",m:0},
+  {r:"Pouch of Superior Stardust",i:["Superior Stardust Herb","Mortar and Pestle"],s:"",c:"Materials",m:0},
+  {r:"Quill",i:["Any Feather","Any Cutting Tool"],s:"",c:"Materials",m:2},
+  {r:"Rope",i:["Yarn","Yarn"],s:"",c:"Materials",m:0},
+  {r:"Sheet of Paper",i:["Wood Pulp"],s:"Oven",c:"Materials",m:0},
+  {r:"Sheet of Paper",i:["Any Water Source","Leather Scraps"],s:"",c:"Materials",m:1},
+  {r:"Short Stick (×2) and Wood Chips",i:["Long Branch","Any Cutting Tool"],s:"",c:"Materials",m:0},
+  {r:"Sinew",i:["Raw Rabbit Meat","Sharp Rock","Any Cutting Tool"],s:"",c:"Materials",m:1},
+  {r:"Sinew",i:["Rat's Tail","Rat's Tail","Any Cutting Tool"],s:"",c:"Materials",m:1},
+  {r:"Stardust",i:["Stardust Herb","Mortar and Pestle"],s:"",c:"Materials",m:0},
+  {r:"Thread",i:["Hair/Tuft of Cat Fur","Spinning Wheel"],s:"Spinning Wheel",c:"Materials",m:0},
+  {r:"Thread",i:["Hair/Tuft of Cat Fur","Hair/Tuft of Cat Fur"],s:"",c:"Materials",m:0},
+  {r:"Wood Chips",i:["Any Wood","Any Cutting Tool/Bench Saw"],s:"Bench Saw",c:"Materials",m:0},
+  {r:"Wood Pulp",i:["Wood Chips","Any Water Source"],s:"",c:"Materials",m:0},
+  {r:"Wool",i:["Shears","Sheep (needs Pet Pal)"],s:"",c:"Materials",m:0},
+  {r:"Yarn",i:["Wool","Wool"],s:"",c:"Materials",m:0},
+
+  // ARMOUR
+  {r:"Armour of the Eternals",i:["Eternal Artefact","Eternal Plate","Metal Scraps","Source Orb"],s:"",c:"Armour",m:0},
+  {r:"Handmade Chain Armour",i:["Needle and Thread","Metal Scraps"],s:"",c:"Armour",m:0},
+  {r:"Handmade Cloth Shirt",i:["Needle and Thread","Cloth Scraps"],s:"",c:"Armour",m:0},
+  {r:"Handmade Leather Armour",i:["Needle and Thread","Leather Scraps"],s:"",c:"Armour",m:0},
+  {r:"Handmade Mage Armour",i:["Needle and Thread","Cloth Scraps","Pixie Dust"],s:"",c:"Armour",m:0},
+  {r:"Handmade Plate Armour",i:["Plate Scraps"],s:"Anvil",c:"Armour",m:0},
+  {r:"Handmade Plate Armour",i:["Plate Scraps","Any Hammer"],s:"Anvil",c:"Armour",m:0},
+  {r:"Handmade Scale Armour",i:["Scale Scraps","Any Hammer"],s:"Anvil",c:"Armour",m:0},
+  {r:"Handmade Shield",i:["Metal Scraps","Wood Chips"],s:"",c:"Armour",m:0},
+  {r:"Boots — Immunity to Slipping",i:["Nails","Boots"],s:"",c:"Armour",m:0},
+  {r:"Dwarven Mask of the Shapeshifter",i:["Ripped-Off Dwarven Face","Source Orb"],s:"",c:"Armour",m:0},
+  {r:"Elven Mask of the Shapeshifter",i:["Ripped-Off Elven Face","Source Orb"],s:"",c:"Armour",m:0},
+  {r:"Human Mask of the Shapeshifter",i:["Ripped-Off Human Face","Source Orb"],s:"",c:"Armour",m:0},
+  {r:"Lizard Mask of the Shapeshifter",i:["Ripped-Off Lizard Face","Source Orb"],s:"",c:"Armour",m:0},
+  {r:"Mask of the Shapeshifter",i:["Dwarven Mask of the Shapeshifter","Elven Mask of the Shapeshifter","Human Mask of the Shapeshifter","Lizard Mask of the Shapeshifter","Source Orb"],s:"",c:"Armour",m:0},
+  {r:"Amulet Ataraxian",i:["Eternal Artefact","Amulet"],s:"",c:"Armour",m:0},
+  {r:"Belt Ataraxian",i:["Eternal Artefact","Belt"],s:"",c:"Armour",m:0},
+  {r:"Boots Ataraxian",i:["Eternal Artefact","Boots"],s:"",c:"Armour",m:0},
+  {r:"Gloves Ataraxian",i:["Eternal Artefact","Gloves"],s:"",c:"Armour",m:0},
+  {r:"Helmet Ataraxian",i:["Eternal Artefact","Helmet"],s:"",c:"Armour",m:0},
+  {r:"Pants Ataraxian",i:["Eternal Artefact","Pants"],s:"",c:"Armour",m:0},
+  {r:"Ring Ataraxian",i:["Eternal Artefact","Ring"],s:"",c:"Armour",m:0},
+  {r:"Chest Ataraxian",i:["Eternal Artefact","Chest Armour"],s:"",c:"Armour",m:0},
+
+  // WEAPONS
+  {r:"Big Tongs Roped Together",i:["Cloth Scraps/Leather Scraps","Tongs"],s:"",c:"Weapons",m:0},
+  {r:"Bowstring",i:["Sinew","Sinew"],s:"",c:"Weapons",m:0},
+  {r:"Bowstring",i:["Yarn","Yarn","Needle"],s:"",c:"Weapons",m:1},
+  {r:"Crossbow",i:["Crossbow without Bowstring","Bowstring"],s:"",c:"Weapons",m:0},
+  {r:"Handmade Sword",i:["Metal Scraps","Any Hammer"],s:"Anvil",c:"Weapons",m:0},
+  {r:"Improv Wand",i:["Short Stick","Any Skull"],s:"",c:"Weapons",m:0},
+  {r:"Improvised Staff",i:["Long Branch","Shell"],s:"",c:"Weapons",m:0},
+  {r:"Knife On A Stick",i:["Short Stick","Any Dagger","Rope"],s:"",c:"Weapons",m:0},
+  {r:"Makeshift Club",i:["Long Branch","Cloth Scraps/Leather Scraps"],s:"",c:"Weapons",m:0},
+  {r:"Makeshift Club",i:["Long Branch","Sharp Rock","Sharp Rock","Sharp Rock"],s:"",c:"Weapons",m:0},
+  {r:"Makeshift Club",i:["Long Branch","Wood Chips","Crafter's Kit"],s:"",c:"Weapons",m:1},
+  {r:"Primitive Harpoon",i:["Long Branch","Arrowhead/A Sharp Piece of Metal/Any Dagger"],s:"",c:"Weapons",m:0},
+  {r:"Sharp Stone on a Big Branch",i:["Long Branch","Sharp Rock"],s:"",c:"Weapons",m:0},
+  {r:"Sharp Stone on a Stick",i:["Short Stick","Sharp Rock"],s:"",c:"Weapons",m:0},
+  {r:"Shiv",i:["A Sharp Piece of Metal","Cloth Scraps/Leather Scraps/Handkerchief"],s:"",c:"Weapons",m:0},
+  {r:"Shiv",i:["A Sharp Piece of Metal","Any Hammer"],s:"Anvil",c:"Weapons",m:0},
+  {r:"Toy Crossbow",i:["Short Stick","Long Branch"],s:"",c:"Weapons",m:0},
+  {r:"Twig With A String",i:["Short Stick","Bowstring"],s:"",c:"Weapons",m:0},
+  {r:"Poisoned Weapon",i:["Any Poison Source","Any Weapon"],s:"",c:"Weapons",m:0},
+  {r:"Fire Enchanted Weapon",i:["Any Oil Source","Any Weapon"],s:"Cooking Station",c:"Weapons",m:1},
+  {r:"Buffed Weapon (Eternal Artefact)",i:["Eternal Artefact","Weapon (except of wands and staves)"],s:"",c:"Weapons",m:0},
+
+  // RUNES
+  {r:"Small Flame Rune",i:["Any Wood","Any Oil Source","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Small Frost Rune",i:["Any Water Source","Any Metal Item","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Small Masterwork Rune",i:["Livewood Log","Any Wine Source","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Small Rock Rune",i:["Any Rock","Any Beer Source","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Small Thunder Rune",i:["Any Water Source","Any Gold Item","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Small Venom Rune",i:["Any Bone","Any Poison Source","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Giant Rune (Any Type)",i:["Large Rune","Large Rune","Pouch of Superior Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Large Rune (Any Type)",i:["Medium Rune","Medium Rune","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Medium Rune (Any Type)",i:["Small Rune","Small Rune","Pixie Dust"],s:"",c:"Runes",m:0},
+  {r:"Rune of Power (Any Size)",i:["Rune (Same Type/Size)","Rune Frame of Power"],s:"",c:"Runes",m:0},
+  {r:"Mystical Rune (Any Size)",i:["Rune (Same Type/Size)","Mystical Rune Frame"],s:"",c:"Runes",m:0},
+
+  // ARROWS
+  {r:"Arrow",i:["Arrow Shaft","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Arrowhead (×3)",i:["Sharp Piece Of Metal/Sharp Rock","Any Cutting Tool"],s:"",c:"Arrows",m:0},
+  {r:"Arrowhead (×5)",i:["Bone","Any Cutting Tool"],s:"",c:"Arrows",m:0},
+  {r:"Arrow Shaft (×4) and Wood Chips",i:["Short Stick", "Any Cutting Tool/Bench Saw"],s:"",c:"Arrows",m:0},
+  {r:"Blessed Water Arrow",i:["Arrow Shaft","Blessed Water Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Blessed Water Arrow",i:["Source Orb","Water Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Blessed Water Arrowhead",i:["Source Orb","Water Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Charming Arrow",i:["Arrow Shaft","Charming Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Charming Arrow",i:["Jar of Honey","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Charming Arrowhead",i:["Jar of Honey","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Cursed Fire Arrow",i:["Arrow Shaft","Cursed Fire Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Cursed Fire Arrow",i:["Source Orb","Fire Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Cursed Fire Arrowhead",i:["Source Orb","Fire Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Explosive Arrow",i:["Arrow Shaft","Explosive Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Explosive Arrow",i:["Any Oil Source","Fire Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Explosive Arrowhead",i:["Any Oil Source","Fire Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Fire Arrow",i:["Fire Essence (Any Quality)","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Fire Arrow",i:["Arrow Shaft","Fire Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Fire Arrow",i:["Fire Arrowhead","Oil"],s:"",c:"Arrows",m:1},
+  {r:"Fire Arrowhead",i:["Arrowhead","Fire Essence (Any Quality)"],s:"",c:"Arrows",m:0},
+  {r:"Fire Arrowhead",i:["Arrowhead"],s:"Any Cooking Station",c:"Arrows",m:1},
+  {r:"Freezing Arrow",i:["Water Essence (Any Quality)","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Freezing Arrow",i:["Arrow Shaft","Freezing Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Freezing Arrowhead",i:["Water Essence (Any Quality)","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Knockdown Arrow",i:["Arrow Shaft","Knockdown Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Knockdown Arrowhead",i:["Antler/Adult Antler","Any Cutting Tool"],s:"",c:"Arrows",m:0},
+  {r:"Poison Arrow",i:["Arrow Shaft","Poisoned Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Poison Arrow",i:["Any Poison Source","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Poisoned Arrowhead",i:["Any Poison Source","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Poison Cloud Arrow",i:["Earth Essence (Any Quality)","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Poison Cloud Arrow",i:["Arrow Shaft","Poison Cloud Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Poison Cloud Arrowhead",i:["Earth Essence (Any Quality)","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Shocking Arrow",i:["Air Essence (Any Quality)","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Shocking Arrow",i:["Arrow Shaft","Shocking Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Shocking Arrowhead",i:["Air Essence (Any Quality)","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Shocking Arrowhead",i:["Tooth","Any Cutting Tool"],s:"",c:"Arrows",m:0},
+  {r:"Slowdown Arrow",i:["Arrow Shaft","Slowdown Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Slowdown Arrow",i:["Any Oil Source","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Slowdown Arrowhead",i:["Any Oil Source","Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Smokescreen Arrow",i:["Arrow Shaft","Smokescreen Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Static Cloud Arrow",i:["Arrow Shaft","Static Cloud Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Static Cloud Arrow",i:["Air Essence (Any Quality)","Steam Cloud Arrow"],s:"",c:"Arrows",m:1},
+  {r:"Static Cloud Arrow",i:["Water Essence (Any Quality)","Shocking Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Static Cloud Arrowhead",i:["Any Water Source","Shocking Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Static Cloud Arrowhead",i:["Air Essence (Any Quality)","Steam Cloud Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Static Cloud Arrowhead",i:["Water Essence (Any Quality)","Shocking Arrowhead"],s:"",c:"Arrows",m:1},
+  {r:"Steam Cloud Arrow",i:["Arrow Shaft","Steam Cloud Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Steam Cloud Arrowhead",i:["Any Water Source","Fire Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Water Arrow",i:["Arrow Shaft","Water Arrowhead"],s:"",c:"Arrows",m:0},
+  {r:"Water Arrow",i:["Any Water Source","Arrow"],s:"",c:"Arrows",m:0},
+  {r:"Water Arrowhead",i:["Any Water Source","Arrowhead"],s:"",c:"Arrows",m:0},
+
+  // GRENADES
+  {r:"Blessed Ice Grenade",i:["Source Orb","Frost Grenade"],s:"",c:"Grenades",m:0},
+  {r:"Blessed Oil Flask",i:["Source Orb","Oil Flask"],s:"",c:"Grenades",m:0},
+  {r:"Blessed Water Balloon",i:["Source Orb","Water Balloon"],s:"",c:"Grenades",m:0},
+  {r:"Chemical Warfare Grenade",i:["Empty Canister","Intestines"],s:"",c:"Grenades",m:0},
+  {r:"Cluster Grenade",i:["Empty Grenade","Fire Essence (Any Quality)"],s:"",c:"Grenades",m:0},
+  {r:"Cursed Cluster Grenade",i:["Source Orb","Cluster Grenade"],s:"",c:"Grenades",m:0},
+  {r:"Cursed Firestorm Grenade",i:["Source Orb","Firestorm Grenade"],s:"",c:"Grenades",m:0},
+  {r:"Cursed Poison Flask",i:["Source Orb","Poison Flask"],s:"",c:"Grenades",m:0},
+  {r:"Eraser Grenade",i:["Thunderbolt Grenade","Distinctive Puffball"],s:"",c:"Grenades",m:1},
+  {r:"Firestorm Grenade",i:["Bottle Filled With Oil","Fuse"],s:"",c:"Grenades",m:0},
+  {r:"Frost Grenade",i:["Empty Grenade","Water Essence (Any Quality)","Fuse"],s:"",c:"Grenades",m:0},
+  {r:"Holy Hand Grenade",i:["Sovereign's Orb","Pixie Dust/Starfish"],s:"",c:"Grenades",m:0},
+  {r:"Love Grenade",i:["Empty Perfume Bottle","Jar of Honey/Pixie Dust"],s:"",c:"Grenades",m:0},
+  {r:"MindMaggots Grenade",i:["Empty Grenade","Jar of MindMaggots"],s:"",c:"Grenades",m:0},
+  {r:"Nailbomb Grenade",i:["Empty Grenade","Broken Bottle/Nails"],s:"",c:"Grenades",m:0},
+  {r:"Nailbomb Grenade",i:["Empty Grenade","Metal Scraps"],s:"",c:"Grenades",m:1},
+  {r:"Nailbomb Grenade",i:["Empty Grenade","Scale Scraps"],s:"",c:"Grenades",m:1},
+  {r:"Oil Flask",i:["Empty Flask","Any Oil Source"],s:"",c:"Grenades",m:0},
+  {r:"Poison Cloud Grenade",i:["Empty Canister","Poison/Rotten Eggs"],s:"",c:"Grenades",m:0},
+  {r:"Poison Flask",i:["Empty Flask","Any Poison Source"],s:"",c:"Grenades",m:0},
+  {r:"Razzle Dazzle Grenade",i:["Empty Canister","Air Resistance Potion/Jellyroom"],s:"",c:"Grenades",m:0},
+  {r:"Smoke Grenade",i:["Empty Canister","Any Wood","Any Oil Source"],s:"",c:"Grenades",m:1},
+  {r:"Terror Grenade",i:["Empty Canister","Tormented Soul (Normal/High Quality)"],s:"",c:"Grenades",m:0},
+  {r:"Thunderbolt Grenade",i:["Empty Canister","Air Essence (Any Quality)"],s:"",c:"Grenades",m:0},
+  {r:"Tremor Grenade",i:["Empty Canister","Earth Essence (Any Quality)"],s:"",c:"Grenades",m:0},
+  {r:"Water Balloon",i:["Intestines","Any Water Source"],s:"",c:"Grenades",m:0},
+  {r:"Soggy Nailbomb",i:["Nailbomb Grenade","Water Balloon","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Poison Nailbomb",i:["Nailbomb Grenade","Poison Flask","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Oily Nailbomb",i:["Nailbomb Grenade","Oil Flask","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Flaming Nailbomb",i:["Nailbomb Grenade","Firestorm Grenade","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Icy Nailbomb",i:["Nailbomb Grenade","Frost Grenade","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Water Dazzler Grenade",i:["Flashbang Grenade","Water Balloon","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Poison Dazzler Grenade",i:["Flashbang Grenade","Poison Flask","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Oil Dazzler Grenade",i:["Flashbang Grenade","Oil Flask","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Flame Dazzler Grenade",i:["Flashbang Grenade","Firestorm Grenade","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Ice Dazzler Grenade",i:["Flashbang Grenade","Frost Grenade","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Stunning Water Grenade",i:["Taser Grenade","Water Balloon","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Stunning Poison Grenade",i:["Taser Grenade","Poison Flask","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Stunning Oil Grenade",i:["Taser Grenade","Oil Flask","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Stunning Flame Grenade",i:["Taser Grenade","Firestorm Grenade","Rope"],s:"",c:"Grenades",m:1},
+  {r:"Stunning Ice Grenade",i:["Taser Grenade","Frost Grenade","Rope"],s:"",c:"Grenades",m:1},
+
+  // POTIONS - HEALING
+  {r:"Minor Healing Potion",i:["Empty Potion Bottle","Penny Bun Mushroom"],s:"",c:"Potions",m:0},
+  {r:"Minor Healing Potion",i:["Small Poison Bottle","Red Fabric Dye"],s:"",c:"Potions",m:0},
+  {r:"Medium Healing Potion",i:["Minor Healing Potion","Minor Healing Potion/Augmentor (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Medium Healing Potion",i:["Medium Poison Bottle","Red Fabric Dye"],s:"",c:"Potions",m:0},
+  {r:"Healing Potion",i:["Medium Healing Potion","Medium Healing Potion/Augmentor (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Healing Potion",i:["Large Poison Bottle","Red Fabric Dye"],s:"",c:"Potions",m:0},
+  {r:"Huge Healing Potion",i:["Healing Potion","Healing Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Giant Healing Potion",i:["Huge Healing Potion","Huge Healing Potion/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Healing Elixir",i:["Empty Potion Bottle","Yarrow Flower"],s:"",c:"Potions",m:0},
+
+  // POTIONS - POISONS
+  {r:"Small Poison Bottle",i:["Empty Potion Bottle","Fly Agaric Mushroom/Barrel of Ooze"],s:"",c:"Potions",m:0},
+  {r:"Small Poison Bottle",i:["Minor Healing Potion","Zaikk's Talon"],s:"",c:"Potions",m:0},
+  {r:"Medium Poison Bottle",i:["Small Poison Bottle","Small Poison Bottle/Augmentor (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Medium Poison Bottle",i:["Medium Healing Potion","Zaikk's Talon"],s:"",c:"Potions",m:0},
+  {r:"Large Poison Bottle",i:["Medium Poison Bottle","Medium Poison Bottle/Augmentor (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Poison Bottle",i:["Healing Potion","Zaikk's Talon"],s:"",c:"Potions",m:0},
+  {r:"Huge Poison Vial",i:["Large Poison Bottle","Large Poison Bottle/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Huge Poison Vial",i:["Huge Healing Potion","Zaikk's Talon"],s:"",c:"Potions",m:0},
+  {r:"Giant Poison Vial",i:["Giant Healing Potion","Zaikk's Talon"],s:"",c:"Potions",m:0},
+  {r:"Giant Poison Vial",i:["Huge Poison Vial","Huge Poison Vial/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Fake Healing Potion",i:["Any Poison Bottle","Red Fabric Dye"],s:"",c:"Potions",m:0},
+  {r:"Poison Elixir",i:["Healing Elixir","Zaikk's Talon"],s:"",c:"Potions",m:0},
+  {r:"Void-Enhanced Poison",i:["Small Poison Bottle","Void-Touched Livewood Fragments"],s:"",c:"Potions",m:0},
+
+  // POTIONS - RESISTS
+  {r:"Air Resistance Potion",i:["Empty Potion Bottle","Jellyroom"],s:"",c:"Potions",m:0},
+  {r:"Medium Air Resistance Potion",i:["Small Air Resistance Potion","Small Air Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Air Resistance Potion",i:["Medium Air Resistance Potion","Medium Air Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Huge Air Resistance Potion",i:["Large Air Resistance Potion","Large Air Resistance Potion/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Earth Resistance Potion",i:["Empty Potion Bottle","Earth Tongue Mushroom"],s:"",c:"Potions",m:0},
+  {r:"Medium Earth Resistance Potion",i:["Earth Resistance Potion","Earth Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Earth Resistance Potion",i:["Medium Earth Resistance Potion","Medium Earth Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Huge Earth Resistance Potion",i:["Large Earth Resistance Potion","Large Earth Resistance Potion/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Fire Resistance Potion",i:["Empty Potion Bottle","Guepinia Mushroom"],s:"",c:"Potions",m:0},
+  {r:"Medium Fire Resistance Potion",i:["Fire Resistance Potion","Fire Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Fire Resistance Potion",i:["Medium Fire Resistance Potion","Medium Fire Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Huge Fire Resistance Potion",i:["Large Fire Resistance Potion","Large Fire Resistance Potion/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Water Resistance Potion",i:["Empty Potion Bottle","Bluegill Mushroom"],s:"",c:"Potions",m:0},
+  {r:"Medium Water Resistance Potion",i:["Water Resistance Potion","Water Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Water Resistance Potion",i:["Medium Water Resistance Potion","Medium Water Resistance Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Huge Water Resistance Potion",i:["Large Water Resistance Potion","Large Water Resistance Potion/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Small Magic Armour Potion",i:["Empty Potion Bottle","Whisperwood"],s:"",c:"Potions",m:0},
+  {r:"Medium Magic Armour Potion",i:["Small Magic Armour Potion","Small Magic Armour Potion/Augmentor (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Magic Armour Potion",i:["Medium Magic Armour Potion","Medium Magic Armour Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Giant Magic Armour Potion",i:["Large Magic Armour Potion","Large Magic Armour Potion"],s:"",c:"Potions",m:1},
+  {r:"Physical Armour Potion",i:["Empty Potion Bottle","Amadouvier"],s:"",c:"Potions",m:0},
+  {r:"Medium Physical Armour Potion",i:["Physical Armour Potion","Physical Armour Potion/Augmentor (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Physical Armour Potion",i:["Medium Physical Armour Potion","Medium Physical Armour Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Giant Physical Armour Potion",i:["Large Physical Armour Potion","Large Physical Armour Potion"],s:"",c:"Potions",m:1},
+  {r:"Minor Resist All Potion",i:["Empty Potion Bottle","Trumpet Of Death"],s:"",c:"Potions",m:0},
+  {r:"Medium Resist All Potion",i:["Minor Resist All Potion","Minor Resist All Potion/Augmentor (High/Ultimate Quality)"],s:"",c:"Potions",m:0},
+  {r:"Large Resist All Potion",i:["Medium Resist All Potion","Medium Resist All Potion/Augmentor (Ultimate Quality)"],s:"",c:"Potions",m:0},
+
+  // POTIONS - STATS
+  {r:"Attar of the Blood Rose",i:["Empty Potion Bottle","Blood Rose"],s:"",c:"Potions",m:0},
+  {r:"Invisibility Potion",i:["Empty Potion Bottle","Chanterelle"],s:"",c:"Potions",m:0},
+  {r:"Minor Constitution Potion",i:["Empty Potion Bottle","Farhangite"],s:"",c:"Potions",m:0},
+  {r:"Minor Finesse Potion",i:["Empty Potion Bottle","Boletus"],s:"",c:"Potions",m:0},
+  {r:"Minor Intelligence Potion",i:["Empty Potion Bottle","Calocera"],s:"",c:"Potions",m:0},
+  {r:"Minor Strength Potion",i:["Empty Potion Bottle","Amethyst Deceiver"],s:"",c:"Potions",m:0},
+  {r:"Minor Wits Potion",i:["Empty Potion Bottle","Puffball"],s:"",c:"Potions",m:0},
+  {r:"Potion Of Jellyfish Skin",i:["Empty Potion Bottle","Air Essence (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Potion Of Nimble Tumble",i:["Empty Potion Bottle","Water Essence (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Potion Of Strong Will",i:["Empty Potion Bottle","Fire Essence (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Stoneskin Potion",i:["Empty Potion Bottle","Earth Essence (Any Quality)"],s:"",c:"Potions",m:0},
+  {r:"Alertness Herbmix",i:["Puffball","Drudanae"],s:"",c:"Potions",m:0},
+  {r:"Potent Alertness Herbmix",i:["Void-Tainted Yellow Ridgeback","Alertness Herbmix"],s:"",c:"Potions",m:0},
+  {r:"Enlightenment Herbmix",i:["Calocera","Drudanae"],s:"",c:"Potions",m:0},
+  {r:"Potent Enlightenment Herbmix",i:["Void-Tainted Umber Monkfish","Enlightenment Herbmix"],s:"",c:"Potions",m:0},
+  {r:"Ferocity Herbmix",i:["Augmentor","Drudanae"],s:"",c:"Potions",m:0},
+  {r:"Potent Ferocity Herbmix",i:["Void-Tainted Crimson Bream","Ferocity Herbmix"],s:"",c:"Potions",m:0},
+  {r:"Courage Herbmix",i:["Farhangite","Drudanae"],s:"",c:"Potions",m:0},
+
+  // POTIONS - HERB GARDEN MOD
+  {r:"Potion of Vitality",i:["Source Orb","Distinctive Wizard's Hat Agaric","Minor Constitution Potion"],s:"",c:"Potions",m:2},
+  {r:"Potion of Focus",i:["Source Orb","Distinctive Farhangite","Large Strength Potion"],s:"",c:"Potions",m:2},
+  {r:"Potion of Authority",i:["Source Orb","Distinctive Farhangite","Large Intelligence Potion"],s:"",c:"Potions",m:2},
+  {r:"Potion of Nimble Fingers",i:["Source Orb","Distinctive Puffball","Large Wits Potion"],s:"",c:"Potions",m:2},
+  {r:"Potion of Allure",i:["Source Orb","Distinctive Drudanae","Large Finesse Potion"],s:"",c:"Potions",m:2},
+  {r:"Potion of Power",i:["Source Orb","Distinctive Wizard's Hat Agaric","Large Strength Potion"],s:"",c:"Potions",m:2},
+  {r:"Small Potion of Shadow",i:["Source Orb","Distinctive Trumpet of Death","Medium Invisibility Potion"],s:"",c:"Potions",m:2},
+  {r:"Medium Potion of Shadow",i:["Source Orb","Distinctive Trumpet of Death","Medium Finesse Potion"],s:"",c:"Potions",m:2},
+  {r:"Large Potion of Shadow",i:["Source Orb","Distinctive Trumpet of Death","Large Finesse Potion"],s:"",c:"Potions",m:2},
+  {r:"Draught of Strength",i:["Empty Potion Bottle","Distinctive Wizard's Hat Agaric","Distinctive Farhangite"],s:"",c:"Potions",m:2},
+  {r:"Draught of Finesse",i:["Empty Potion Bottle","Distinctive Trumpet of Death","Distinctive Boletus"],s:"",c:"Potions",m:2},
+  {r:"Draught of Constitution",i:["Empty Potion Bottle","Distinctive Puffball","Distinctive Drudanae"],s:"",c:"Potions",m:2},
+  {r:"Draught of Wits",i:["Empty Potion Bottle","Distinctive Trumpet of Death","Distinctive Amadouvier"],s:"",c:"Potions",m:2},
+  {r:"Draught of Intelligence",i:["Empty Potion Bottle","Distinctive Wizard's Hat Agaric","Distinctive Whisperwood"],s:"",c:"Potions",m:2},
+  {r:"Draught of Speed",i:["Empty Potion Bottle","Distinctive Drudanae","Air Essence (Any Quality)"],s:"",c:"Potions",m:2},
+
+  // SKILLBOOKS
+  // Air
+  {r:"Blank Air Skillbook",i:["Leather Cover","Quill","Distinctive Tea"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Air Skillbook",i:["Blank Air Skillbook","Quill","Distinctive Tea"],s:"",c:"Skillbooks",m:2},
+  {r:"Apportation Skillbook",i:["Blank Air Skillbook","Apportation Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Blinding Radiance Skillbook",i:["High Tier Blank Air Skillbook","Blinding Radiance Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Breathing Bubble Skillbook",i:["Any Air Skillbook","Any Warrior Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Chain Lightning Skillbook",i:["High Tier Blank Air Skillbook","Chain Lightning Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Closed Circuit Skillbook",i:["High Tier Blank Air Skillbook","Closed Circuit Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Cursed Electric Infusion Skillbook",i:["Any Air Skillbook","Any Summoning Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Dazing Bolt Skillbook",i:["Blank Air Skillbook","Dazing Bolt Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Electric Discharge Skillbook",i:["Blank Air Skillbook","Electric Discharge Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Electric Infusion Skillbook",i:["Any Air Skillbook","Any Summoning Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Erratic Wisp Skillbook",i:["Any Air Skillbook","Any Ranger Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Evasive Aura Skillbook",i:["Any Air Skillbook","Any Ranger Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Favourable Wind Skillbook",i:["Blank Air Skillbook","Favourable Wind Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Jellyfish Skin Skillbook",i:["Any Air Skillbook","Any Polymorph Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Mass Breathing Bubbles Skillbook",i:["Any Air Skillbook","Any Warrior Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Nether Swap Skillbook",i:["High Tier Blank Air Skillbook","Nether Swap Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Pressure Spike Skillbook",i:["Blank Air Skillbook","Pressure Spike Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Shocking Touch Skillbook",i:["Blank Air Skillbook","Shocking Touch Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Smoke Cover Skillbook",i:["Any Air Skillbook","Any Rogue Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Superconductor Skillbook",i:["High Tier Blank Air Skillbook","Superconductor Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Teleportation Skillbook",i:["Blank Air Skillbook","Teleportation Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Thunderstorm Skillbook",i:["High Tier Blank Air Skillbook","Thunderstorm Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Tornado Skillbook",i:["High Tier Blank Air Skillbook","Tornado Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Vacuum Aura Skillbook",i:["Any Air Skillbook","Any Necromancy Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Vacuum Touch Skillbook",i:["Any Air Skillbook","Any Necromancy Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Vaporise Skillbook",i:["Any Air Skillbook","Any Polymorph Skillbook"],s:"",c:"Skillbooks",m:0},
+
+  // Earth
+  {r:"Blank Earth Skillbook",i:["Leather Cover","Quill","Distinctive Amadouvier"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Earth Skillbook",i:["Blank Earth Skillbook","Quill","Distinctive Amadouvier"],s:"",c:"Skillbooks",m:2},
+  {r:"Acid Infusion Skillbook",i:["Any Earth Skillbook","Any Summoning Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Acid Spores Skillbook",i:["High Tier Blank Earth Skillbook","Acid Spores Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Artillery Plant Skillbook",i:["Blank Earth Skillbook","Artillery Plant Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Contamination Skillbook",i:["Blank Earth Skillbook","Contamination Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Corrosive Spray Skillbook",i:["Any Earth Skillbook","Any Necromancy Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Corrosive Touch Skillbook",i:["Any Earth Skillbook","Any Necromancy Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Dust Blast Skillbook",i:["Any Earth Skillbook","Any Ranger Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Earthquake Skillbook",i:["Blank Earth Skillbook","Earthquake Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Fortify Skillbook",i:["Blank Earth Skillbook","Fortify Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Fossil Strike Skillbook",i:["Blank Earth Skillbook","Fossil Strike Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Impalement Skillbook",i:["Blank Earth Skillbook","Impalement Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Living Wall Skillbook",i:["High Tier Blank Earth Skillbook","Living Wall Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Mass Oily Carapace Skillbook",i:["Any Earth Skillbook","Any Warrior Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Mend Metal Skillbook",i:["Blank Earth Skillbook","Mend Metal Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Oily Carapace Skillbook",i:["Any Earth Skillbook","Any Warrior Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Poison Dart Skillbook",i:["Blank Earth Skillbook","Poison Dart Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Poison Infusion Skillbook",i:["Any Earth Skillbook","Any Summoning Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Poison Wave Skillbook",i:["Blank Earth Skillbook","Poison Wave Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Poisonous Skin Skillbook",i:["Any Earth Skillbook","Any Polymorph Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Pyroclastic Eruption Skillbook",i:["High Tier Blank Earth Skillbook","Pyroclastic Eruption Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Reactive Armour Skillbook",i:["Blank Earth Skillbook","Reactive Armour Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Siphon Poison Skillbook",i:["High Tier Blank Earth Skillbook","Siphon Poison Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Throw Dust Skillbook",i:["Any Earth Skillbook","Any Ranger Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Turn To Oil Skillbook",i:["Any Earth Skillbook","Any Polymorph Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Venom Coating Skillbook",i:["Any Earth Skillbook","Any Rogue Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Venomous Aura Skillbook",i:["Any Earth Skillbook","Any Rogue Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Worm Tremor Skillbook",i:["Blank Earth Skillbook","Worm Tremor Scroll"],s:"",c:"Skillbooks",m:0},
+
+  // Fire
+  {r:"Blank Fire Skillbook",i:["Leather Cover","Quill","Distinctive Boletus"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Fire Skillbook",i:["Blank Fire Skillbook","Quill","Distinctive Boletus"],s:"",c:"Skillbooks",m:2},
+  {r:"Bleed Fire Skillbook",i:["Blank Fire Skillbook","Bleed Fire Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Epidemic Of Fire Skillbook",i:["High Tier Blank Fire Skillbook","Epidemic Of Fire Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Fire Whip Skillbook",i:["Blank Fire Skillbook","Fire Whip Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Fireball Skillbook",i:["Blank Fire Skillbook","Fireball Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Firebrand Skillbook",i:["High Tier Blank Fire Skillbook","Firebrand Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Flaming Crescendo Skillbook",i:["High Tier Blank Fire Skillbook","Flaming Crescendo Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Flaming Tongues Skillbook",i:["Blank Fire Skillbook","Flaming Tongues Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Haste Skillbook",i:["Blank Fire Skillbook","Haste Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Ignition Skillbook",i:["Blank Fire Skillbook","Ignition Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Laser Ray Skillbook",i:["Blank Fire Skillbook","Laser Ray Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Meteor Shower Skillbook",i:["High Tier Blank Fire Skillbook","Meteor Shower Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Peace of Mind Skillbook",i:["Blank Fire Skillbook","Peace of Mind Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Searing Daggers Skillbook",i:["Blank Fire Skillbook","Searing Daggers Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Spontaneous Combustion Skillbook",i:["Blank Fire Skillbook","Spontaneous Combustion Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Summon Fire Slug Skillbook",i:["Blank Fire Skillbook","Summon Fire Slug Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Supernova Skillbook",i:["Blank Fire Skillbook","Supernova Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Fire Infusion Skillbook",i:["Any Fire Skillbook","Any Summoning Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Necrofire Infusion Skillbook",i:["Any Fire Skillbook with Source","Any Summoning Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Corpse Explosion Skillbook",i:["Any Fire Skillbook","Any Necromancy Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Mass Corpse Explosion Skillbook",i:["Any Fire Skillbook with Source","Any Necromancy Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Sparking Swings Skillbook",i:["Any Fire Skillbook","Any Warrior Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Master of Sparks Skillbook",i:["Any Fire Skillbook with Source","Any Warrior Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Bleed Fire Skillbook",i:["Any Fire Skillbook","Any Polymorph Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Flaming Skin Skillbook",i:["Any Fire Skillbook with Source","Any Polymorph Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Sabotage Skillbook",i:["Any Fire Skillbook","Any Rogue Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Mass Sabotage Skillbook",i:["Any Fire Skillbook with Source","Any Rogue Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Explosive Trap Skillbook",i:["Any Fire Skillbook","Any Ranger Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Deploy Mass Traps Skillbook",i:["Any Fire Skillbook with Source","Any Ranger Skillbook"],s:"",c:"Skillbooks",m:0},
+
+  // Water
+  {r:"Blank Water Skillbook",i:["Leather Cover","Quill","Distinctive Farhangite"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Water Skillbook",i:["Blank Water Skillbook","Quill","Distinctive Farhangite"],s:"",c:"Skillbooks",m:2},
+  {r:"Arcane Stitch Skillbook",i:["Blank Water Skillbook","Arcane Stitch Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Armour of Frost Skillbook",i:["Blank Water Skillbook","Armour of Frost Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Cleanse Wounds Skillbook",i:["Any Water Skillbook","Any Warrior Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Cryogenic Stasis Skillbook",i:["Blank Water Skillbook","Cryogenic Stasis Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Cryotherapy Skillbook",i:["Any Water Skillbook","Any Ranger Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Deep Freeze Skillbook",i:["High Tier Blank Water Skillbook","Deep Freeze Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Global Cooling Skillbook",i:["High Tier Blank Water Skillbook","Global Cooling Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Hail Strike Skillbook",i:["Blank Water Skillbook","Hail Strike Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Healing Ritual Skillbook",i:["High Tier Blank Water Skillbook","Healing Ritual Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Ice Breaker Skillbook",i:["High Tier Blank Water Skillbook","Ice Breaker Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Ice Fan Skillbook",i:["Blank Water Skillbook","Ice Fan Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Mass Cleanse Wounds Skillbook",i:["Any Water Skillbook","Any Warrior Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Mass Cryotherapy Skillbook",i:["Any Water Skillbook","Any Ranger Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Rain Skillbook",i:["Blank Water Skillbook","Rain Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Restoration Skillbook",i:["Blank Water Skillbook","Restoration Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Soothing Cold Skillbook",i:["Blank Water Skillbook","Soothing Cold Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Steam Lance Skillbook",i:["High Tier Blank Water Skillbook","Steam Lance Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Vampiric Hunger Aura Skillbook",i:["Any Water Skillbook","Any Rogue Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Vampiric Hunger Skillbook",i:["Any Water Skillbook","Any Rogue Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Winter Blast Skillbook",i:["Blank Water Skillbook","Winter Blast Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Blood Rain Skillbook",i:["Any Water Skillbook","Any Necromancy Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Blood Storm Skillbook",i:["Any Water Skillbook with Source","Any Necromancy Skillbook"],s:"",c:"Skillbooks",m:0},
+
+  // Necromancy
+  {r:"Blank Necromancy Skillbook",i:["Leather Cover","Quill","Distinctive Trumpet of Death"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Necromancy Skillbook",i:["Blank Necromancy Skillbook","Quill","Distinctive Trumpet of Death"],s:"",c:"Skillbooks",m:2},
+  {r:"Black Shroud Skillbook",i:["Blank Necromancy Skillbook","Black Shroud Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Blood Rain Skillbook",i:["Blank Necromancy Skillbook","Raining Blood Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Blood Sucker Skillbook",i:["Blank Necromancy Skillbook","Blood Sucker Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Bone Cage Skillbook",i:["Blank Necromancy Skillbook","Bone Cage Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Death Wish Skillbook",i:["Blank Necromancy Skillbook","Death Wish Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Decaying Touch Skillbook",i:["Blank Necromancy Skillbook","Decaying Touch Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Grasp of the Starved Skillbook",i:["High Tier Blank Necromancy Skillbook","Grasp of the Starved Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Infect Skillbook",i:["Blank Necromancy Skillbook","Infect Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Living on the Edge Skillbook",i:["Blank Necromancy Skillbook","Living on the Edge Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Mosquito Swarm Skillbook",i:["Blank Necromancy Skillbook","Mosquito Swarm Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Raise Bloated Corpse Skillbook",i:["Blank Necromancy Skillbook","Raise Bloated Corpse Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Raise Bone Widow Skillbook",i:["Blank Necromancy Skillbook","Raise Bone Widow Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Shackles of Pain Skillbook",i:["Blank Necromancy Skillbook","Shackles of Pain Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Silencing Stare Skillbook",i:["High Tier Blank Necromancy Skillbook","Silencing Stare Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Totems of the Necromancer Skillbook",i:["High Tier Blank Necromancy Skillbook","Totems of the Necromancer Scroll"],s:"",c:"Skillbooks",m:0},
+
+  // Summoning
+  {r:"Blank Summoning Skillbook",i:["Leather Cover","Quill","Distinctive Drudanae"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Summoning Skillbook",i:["Blank Summoning Skillbook","Quill","Distinctive Drudanae"],s:"",c:"Skillbooks",m:2},
+  {r:"Cannibalise Skillbook",i:["High Tier Blank Summoning Skillbook","Cannibalise Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Conjure Incarnate Skillbook",i:["Blank Summoning Skillbook","Conjure Incarnate Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Dimensional Bolt Skillbook",i:["Blank Summoning Skillbook","Dimensional Bolt Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Dominate Mind Skillbook",i:["Blank Summoning Skillbook","Charm Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Door to Eternity Skillbook",i:["High Tier Blank Summoning Skillbook","Door to Eternity Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Elemental Totem Skillbook",i:["Blank Summoning Skillbook","Elemental Totem Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Ethereal Storm Skillbook",i:["High Tier Blank Summoning Skillbook","Ethereal Storm Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Farsight Infusion Skillbook",i:["Blank Summoning Skillbook","Farsight Infusion Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Planar Gateway Skillbook",i:["Blank Summoning Skillbook","Planar Gateway Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Power Infusion Skillbook",i:["Blank Summoning Skillbook","Power Infusion Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Rallying Cry Skillbook",i:["Blank Summoning Skillbook","Rallying Cry Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Shadow Infusion Skillbook",i:["Blank Summoning Skillbook","Shadow Infusion Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Soul Mate Skillbook",i:["Blank Summoning Skillbook","Soul Mate Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Supercharger Skillbook",i:["Blank Summoning Skillbook","Supercharger Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Warp Infusion Skillbook",i:["High Tier Blank Summoning Skillbook","Warp Infusion Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Water Infusion Skillbook",i:["Any Water Skillbook","Any Summoning Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Blessed Ice Infusion Skillbook",i:["Any Water Skillbook with Source","Any Summoning Skillbook"],s:"",c:"Skillbooks",m:0},
+
+  // Polymorph
+  {r:"Blank Polymorph Skillbook",i:["Leather Cover","Quill","Distinctive Whisperwood"],s:"",c:"Skillbooks",m:2},
+  {r:"High Tier Blank Polymorph Skillbook",i:["Blank Polymorph Skillbook","Quill","Distinctive Whisperwood"],s:"",c:"Skillbooks",m:2},
+  {r:"Apotheosis Skillbook",i:["High Tier Blank Polymorph Skillbook","Apotheosis Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Bull Horns Skillbook",i:["Blank Polymorph Skillbook","Bull Horns Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Chameleon Cloak Skillbook",i:["Blank Polymorph Skillbook","Chameleon Cloak Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Chicken Claw Skillbook",i:["Blank Polymorph Skillbook","Chicken Claw Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Equalise Skillbook",i:["High Tier Blank Polymorph Skillbook","Equalise Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Flay Skin Skillbook",i:["High Tier Blank Polymorph Skillbook","Flay Skin Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Forced Exchange Skillbook",i:["High Tier Blank Polymorph Skillbook","Forced Exchange Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Healing Tears Skillbook",i:["Any Water Skillbook","Any Polymorph Skillbook"],s:"",c:"Skillbooks",m:0},
+  {r:"Heart of Steel Skillbook",i:["Blank Polymorph Skillbook","Heart of Steel Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Icy Skin Skillbook",i:["Any Water Skillbook","Any Polymorph Skillbook with Source"],s:"",c:"Skillbooks",m:0},
+  {r:"Medusa Head Skillbook",i:["Blank Polymorph Skillbook","Medusa Head Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Skin Graft Skillbook",i:["Blank Polymorph Skillbook","Skin Graft Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Spider Legs Skillbook",i:["Blank Polymorph Skillbook","Spider Legs Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Spread Your Wings Skillbook",i:["Blank Polymorph Skillbook","Spread Your Wings Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Summon Oily Blob Skillbook",i:["Blank Polymorph Skillbook","Summon Oily Blob Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Tentacle Lash Skillbook",i:["Blank Polymorph Skillbook","Tentacle Lash Scroll"],s:"",c:"Skillbooks",m:0},
+  {r:"Terrain Transmutation Skillbook",i:["Blank Polymorph Skillbook","Terrain Transmutation Scroll"],s:"",c:"Skillbooks",m:0},
+
+  // SCROLLS
+  // Air Scrolls
+  {r:"Apportation Scroll",i:["Sheet of Paper/Parchment","Air Essence (High/Alien Quality)","Rope"],s:"",c:"Scrolls",m:0},
+  {r:"Blinding Radiance Scroll",i:["Sheet of Paper/Parchment","Air Essence (Any Quality)","Gold"],s:"",c:"Scrolls",m:0},
+  {r:"Chain Lightning Scroll",i:["Sheet of Paper/Parchment","Source Orb","Wool/Yarn"],s:"",c:"Scrolls",m:0},
+  {r:"Closed Circuit Scroll",i:["Sheet of Paper/Parchment","Source Orb","Lucky Rabbit Paw"],s:"",c:"Scrolls",m:0},
+  {r:"Electric Discharge Scroll",i:["Sheet of Paper/Parchment","Air Essence (Any Quality)","Rabbit's Paw"],s:"",c:"Scrolls",m:0},
+  {r:"Favourable Wind Scroll",i:["Sheet of Paper/Parchment","Air Essence (Any Quality)","Panties"],s:"",c:"Scrolls",m:0},
+  {r:"Nether Swap Scroll",i:["Sheet of Paper/Parchment","Air Essence (High/Alien Quality)","Chanterelle"],s:"",c:"Scrolls",m:0},
+  {r:"Pressure Spike Scroll",i:["Sheet of Paper/Parchment","Air Essence (High/Alien Quality)","Handkerchief"],s:"",c:"Scrolls",m:0},
+  {r:"Shocking Touch Scroll",i:["Sheet of Paper/Parchment","Air Essence (Any Quality)","Flour"],s:"",c:"Scrolls",m:0},
+  {r:"Superconductor Scroll",i:["Sheet of Paper/Parchment","Air Essence (Alien Quality)","Jellyroom"],s:"",c:"Scrolls",m:0},
+  {r:"Teleportation Scroll",i:["Sheet of Paper/Parchment","Air Essence (Any Quality)","Feather"],s:"",c:"Scrolls",m:0},
+  {r:"Tornado Scroll",i:["Sheet of Paper/Parchment","Air Essence (High/Alien Quality)","Hair"],s:"",c:"Scrolls",m:0},
+  {r:"Tornado Scroll",i:["Sheet of Paper/Parchment","Air Essence (Alien Quality)","Fancy Feather"],s:"",c:"Scrolls",m:0},
+
+  // Earth Scrolls
+  {r:"Acid Spores Scroll",i:["Sheet of Paper/Parchment","Source Orb","Livewood"],s:"",c:"Scrolls",m:0},
+  {r:"Contamination Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Any Quality)","Intestines"],s:"",c:"Scrolls",m:0},
+  {r:"Earthquake Scroll",i:["Sheet of Paper/Parchment","Earth Essence (High/Alien Quality)","Clay"],s:"",c:"Scrolls",m:0},
+  {r:"Fortify Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Any Quality)","Whisperwood"],s:"",c:"Scrolls",m:0},
+  {r:"Fossil Strike Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Any Quality)","Sharp Rock"],s:"",c:"Scrolls",m:0},
+  {r:"Hungry Flower Scroll",i:["Sheet of Paper/Parchment","Source Orb","Earth Tongue Mushroom"],s:"",c:"Scrolls",m:0},
+  {r:"Impalement Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Any Quality)","Sharp Piece Of Metal"],s:"",c:"Scrolls",m:0},
+  {r:"Living Wall Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Alien Quality)","Augmentor"],s:"",c:"Scrolls",m:0},
+  {r:"Mend Metal Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Any Quality)","Stardust Herb"],s:"",c:"Scrolls",m:0},
+  {r:"Poison Dart Scroll",i:["Sheet of Paper/Parchment","Earth Essence (Any Quality)","Fly Agaric Mushroom"],s:"",c:"Scrolls",m:0},
+  {r:"Poison Wave Scroll",i:["Sheet of Paper/Parchment","Earth Essence (High/Alien Quality)","Slime"],s:"",c:"Scrolls",m:0},
+  {r:"Pyroclastic Eruption Scroll",i:["Sheet of Paper/Parchment","Source Orb","Any Eternal Tablet-shaped Book"],s:"",c:"Scrolls",m:0},
+  {r:"Reactive Armour Scroll",i:["Sheet of Paper/Parchment","Earth Essence (High/Alien Quality)","Trumpet Of Death"],s:"",c:"Scrolls",m:0},
+
+  // Fire Scrolls
+  {r:"Epidemic Of Fire Scroll",i:["Sheet of Paper/Parchment","Source Orb","Large Tusk"],s:"",c:"Scrolls",m:0},
+  {r:"Fireball Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Any Quality)","Sharp Claw"],s:"",c:"Scrolls",m:0},
+  {r:"Firebrand Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Alien Quality)","Fang"],s:"",c:"Scrolls",m:0},
+  {r:"Fire Whip Scroll",i:["Sheet of Paper/Parchment","Fire Essence (High/Alien Quality)","Voidwoken Spike"],s:"",c:"Scrolls",m:0},
+  {r:"Flaming Crescendo Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Alien Quality)","Needle"],s:"",c:"Scrolls",m:0},
+  {r:"Flaming Tongues Scroll",i:["Sheet of Paper/Parchment","Fire Essence (High/Alien Quality)","Cup of Oil"],s:"",c:"Scrolls",m:0},
+  {r:"Haste Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Any Quality)","Antler/Claw"],s:"",c:"Scrolls",m:0},
+  {r:"Ignition Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Any Quality)","Tusk"],s:"",c:"Scrolls",m:0},
+  {r:"Laser Ray Scroll",i:["Sheet of Paper/Parchment","Fire Essence (High/Alien Quality)","Nails"],s:"",c:"Scrolls",m:0},
+  {r:"Peace of Mind Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Any Quality)","Crab's Claw"],s:"",c:"Scrolls",m:0},
+  {r:"Searing Daggers Scroll",i:["Sheet of Paper/Parchment","Fire Essence (Any Quality)","Tooth"],s:"",c:"Scrolls",m:0},
+  {r:"Supernova Scroll",i:["Sheet of Paper/Parchment","Fire Essence (High/Alien Quality)","Sharp Tooth"],s:"",c:"Scrolls",m:0},
+
+  // Water Scrolls
+  {r:"Armour of Frost Scroll",i:["Sheet of Paper/Parchment","Water Essence (Any Quality)","Bluegill Mushroom"],s:"",c:"Scrolls",m:0},
+  {r:"Deep Freeze Scroll",i:["Sheet of Paper/Parchment","Water Essence (Alien Quality)","Mackerel"],s:"",c:"Scrolls",m:0},
+  {r:"Hail Strike Scroll",i:["Sheet of Paper/Parchment","Water Essence (High/Alien Quality)","Chub Fish"],s:"",c:"Scrolls",m:0},
+  {r:"Healing Ritual Scroll",i:["Sheet of Paper/Parchment","Water Essence (High/Alien Quality)","Starfish"],s:"",c:"Scrolls",m:0},
+  {r:"Rain Scroll",i:["Sheet of Paper/Parchment","Water Essence (Any Quality)","Herring"],s:"",c:"Scrolls",m:0},
+  {r:"Restoration Scroll",i:["Sheet of Paper/Parchment","Water Essence (Any Quality)","Penny Bun Mushroom"],s:"",c:"Scrolls",m:0},
+  {r:"Soothing Cold Scroll",i:["Sheet of Paper/Parchment","Water Essence (Any Quality)","Red Snapper"],s:"",c:"Scrolls",m:0},
+  {r:"Steam Lance Scroll",i:["Sheet of Paper/Parchment","Source Orb","Chub Fish"],s:"",c:"Scrolls",m:0},
+  {r:"Winter Blast Scroll",i:["Sheet of Paper/Parchment","Water Essence (Any Quality)","Plaice"],s:"",c:"Scrolls",m:0},
+
+  // Necromancy Scrolls
+  {r:"Black Shroud Scroll",i:["Sheet of Paper/Parchment","Source Orb","Creepy Eye"],s:"",c:"Scrolls",m:0},
+  {r:"Blood Sucker Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (Any Quality)","Penny Bun Mushroom"],s:"",c:"Scrolls",m:0},
+  {r:"Bone Cage Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (High/Alien Quality)","Fishbone"],s:"",c:"Scrolls",m:0},
+  {r:"Decaying Touch Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (Any Quality)","Eye"],s:"",c:"Scrolls",m:0},
+  {r:"Grasp of the Starved Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (High Quality)/Source Orb","Disembodied Hand"],s:"",c:"Scrolls",m:0},
+  {r:"Infect Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (Any Quality)","Intestines"],s:"",c:"Scrolls",m:0},
+  {r:"Living on the Edge Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (High/Alien Quality)","Raw Lumpy Giblets/Dirty Socks"],s:"",c:"Scrolls",m:0},
+  {r:"Raise Bloated Corpse Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (Any Quality)","Raw red meat"],s:"",c:"Scrolls",m:0},
+  {r:"Raise Bone Widow Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (High/Alien Quality)","Ancient Human Skull"],s:"",c:"Scrolls",m:0},
+  {r:"Shackles of Pain Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (Any Quality)","Skull"],s:"",c:"Scrolls",m:0},
+  {r:"Silencing Stare Scroll",i:["Sheet of Paper/Parchment","Shadow Essence (Alien Quality)","Goo"],s:"",c:"Scrolls",m:0},
+
+  // Polymorph Scrolls
+  {r:"Apotheosis Scroll",i:["Sheet of Paper/Parchment","Source Orb","Puppet Bead"],s:"",c:"Scrolls",m:0},
+  {r:"Bull Horns Scroll",i:["Sheet of Paper/Parchment","Life Essence (Any Quality)","Antler/Adult Antler"],s:"",c:"Scrolls",m:0},
+  {r:"Chameleon Cloak Scroll",i:["Sheet of Paper/Parchment","Life Essence (Any Quality)","Long Rat Tail"],s:"",c:"Scrolls",m:0},
+  {r:"Chicken Claw Scroll",i:["Sheet of Paper/Parchment","Life Essence (Any Quality)","Chicken Foot / Big Chicken Foot"],s:"",c:"Scrolls",m:0},
+  {r:"Equalise Scroll",i:["Sheet of Paper/Parchment","Life Essence (Alien Quality)","Pilgrim's Shell"],s:"",c:"Scrolls",m:0},
+  {r:"Heart of Steel Scroll",i:["Sheet of Paper/Parchment","Life Essence (Any Quality)","Metal"],s:"",c:"Scrolls",m:0},
+  {r:"Skin Graft Scroll",i:["Sheet of Paper/Parchment","Source Orb","Animal Scales"],s:"",c:"Scrolls",m:0},
+  {r:"Spider Legs Scroll",i:["Sheet of Paper/Parchment","Life Essence (High/Alien Quality)","Arthropod Leg"],s:"",c:"Scrolls",m:0},
+  {r:"Spread Your Wings Scroll",i:["Sheet of Paper/Parchment","Life Essence (Any Quality)","Sinew"],s:"",c:"Scrolls",m:0},
+  {r:"Summon Oily Blob Scroll",i:["Sheet of Paper/Parchment","Life Essence (High/Alien Quality)","Oil"],s:"",c:"Scrolls",m:0},
+  {r:"Tentacle Lash Scroll",i:["Sheet of Paper/Parchment","Life Essence (Any Quality)","Rat's Tail"],s:"",c:"Scrolls",m:0},
+
+  // Summoning Scrolls
+  {r:"Dimensional Bolt Scroll",i:["Sheet of Paper/Parchment","Tormented Soul (Any Quality)","Pepper"],s:"",c:"Scrolls",m:0},
+  {r:"Dominate Mind Scroll",i:["Sheet of Paper/Parchment","Tormented Soul (Alien Quality)","Jar of Honey"],s:"",c:"Scrolls",m:0},
+  {r:"Elemental Totem Scroll",i:["Sheet of Paper/Parchment","Tormented Soul (Any Quality)","Doll/Wooden figurine"],s:"",c:"Scrolls",m:0},
+  {r:"Ethereal Storm Scroll",i:["Sheet of Paper/Parchment","Source Orb","Carrot"],s:"",c:"Scrolls",m:0},
+  {r:"Planar Gateway Scroll",i:["Sheet of Paper/Parchment","Source Orb","Grapes"],s:"",c:"Scrolls",m:0},
+  {r:"Rallying Cry Scroll",i:["Sheet of Paper/Parchment","Tormented Soul (Any Quality)","Garlic"],s:"",c:"Scrolls",m:0},
+  {r:"Soul Mate Scroll",i:["Sheet of Paper/Parchment","Tormented Soul (High/Alien Quality)","Wheat"],s:"",c:"Scrolls",m:0},
+
+  // Other Scrolls
+  {r:"Curse Scroll",i:["Sheet of Paper/Parchment","Tormented Soul (High/Alien Quality)","Voidwoken Fish"],s:"",c:"Scrolls",m:0},
+  {r:"Resurrection Scroll",i:["Sheet of Paper/Parchment","Water Essence (Any Quality)","Life Essence (Any Quality)"],s:"",c:"Scrolls",m:0},
+
+  // CONSUMABLES
+  {r:"Apple Juice",i:["Empty Cup","Apple"],s:"",c:"Food & Consumables",m:0},
+  {r:"Apple Pie Dough",i:["Apple","Dough"],s:"",c:"Food & Consumables",m:0},
+  {r:"Apple Pie",i:["Apple Pie Dough"],s:"Oven",c:"Food & Consumables",m:0},
+  {r:"Bucket and Cup of Milk",i:["Bucket with Milk","Empty Cup"],s:"",c:"Food & Consumables",m:0},
+  {r:"Black Tea",i:["Teapot","Black Tea Leaves"],s:"",c:"Food & Consumables",m:0},
+  {r:"Boiled Potato",i:["Potato"],s:"Boiling Pot",c:"Food & Consumables",m:0},
+  {r:"Bottle of Beer",i:["Beer Barrel","Empty Bottle"],s:"",c:"Food & Consumables",m:0},
+  {r:"Bottle of Water",i:["Water Barrel","Empty Bottle"],s:"",c:"Food & Consumables",m:0},
+  {r:"Bottle of Wine",i:["Wine Barrel","Empty Bottle"],s:"",c:"Food & Consumables",m:0},
+  {r:"Bread",i:["Dough"],s:"Oven",c:"Food & Consumables",m:0},
+  {r:"Cheese Bread Dough",i:["Cheese","Dough"],s:"",c:"Food & Consumables",m:0},
+  {r:"Cheese Bread",i:["Cheese Bread Dough"],s:"Oven",c:"Food & Consumables",m:0},
+  {r:"Cold Fries",i:["Potato","Any Cutting Tool"],s:"",c:"Food & Consumables",m:0},
+  {r:"Cold Mashed Potatoes",i:["Potato","Any Hammer"],s:"",c:"Food & Consumables",m:0},
+  {r:"Cup of Lemonade",i:["Empty Cup/Mug","Lemon"],s:"Cooking Station",c:"Food & Consumables",m:0},
+  {r:"Cup of Tea",i:["Tea Herbs","Cup of Water"],s:"",c:"Food & Consumables",m:0},
+  {r:"Cup of Water",i:["Empty Cup","Any Water Source"],s:"",c:"Food & Consumables",m:0},
+  {r:"Cup of Oil",i:["Empty Cup","Any Oil Source"],s:"",c:"Food & Consumables",m:0},
+  {r:"Dinner",i:["Any Raw Fish/Raw Meat/Raw Bird Leg/Eggs"],s:"Any Cooking Station",c:"Food & Consumables",m:0},
+  {r:"Dough",i:["Flour","Milk/Water (+ Eggs optional)"],s:"",c:"Food & Consumables",m:0},
+  {r:"Dwarven Stew",i:["Dinner","Beer"],s:"",c:"Food & Consumables",m:0},
+  {r:"Elven Stew",i:["Dinner","Tomato Sauce"],s:"",c:"Food & Consumables",m:0},
+  {r:"Fish Pie Dough",i:["Any Fish","Dough"],s:"",c:"Food & Consumables",m:0},
+  {r:"Fish Pie",i:["Fish Pie Dough"],s:"Oven",c:"Food & Consumables",m:0},
+  {r:"Flour",i:["Wheat","Mortar And Pestle"],s:"",c:"Food & Consumables",m:0},
+  {r:"Glass of Wine",i:["Empty Cup","Grapes/Wine Barrel"],s:"",c:"Food & Consumables",m:0},
+  {r:"Green Tea",i:["Teapot","Green Tea Leaves"],s:"",c:"Food & Consumables",m:0},
+  {r:"Jar of Honey",i:["Empty Honey Jar","Beehive"],s:"",c:"Food & Consumables",m:0},
+  {r:"Mashed Potatoes",i:["Boiled Potato","Milk"],s:"",c:"Food & Consumables",m:0},
+  {r:"Mashed Potatoes",i:["Cold Mashed Potatoes"],s:"Cooking Station/Oven",c:"Food & Consumables",m:0},
+  {r:"Milk",i:["Milk Churn","Empty Cup"],s:"",c:"Food & Consumables",m:0},
+  {r:"Milk and Honey",i:["Jar of Honey","Milk"],s:"",c:"Food & Consumables",m:0},
+  {r:"Mug of Beer",i:["Empty Cup/Mug","Beer"],s:"",c:"Food & Consumables",m:0},
+  {r:"Mug of Tea",i:["Tea Herbs","Mug of Water"],s:"",c:"Food & Consumables",m:0},
+  {r:"Mug of Water",i:["Empty Mug","Water"],s:"",c:"Food & Consumables",m:0},
+  {r:"Mug of Wine",i:["Empty Mug","Grapes/Wine"],s:"",c:"Food & Consumables",m:0},
+  {r:"Orange Juice",i:["Empty Cup","Orange"],s:"",c:"Food & Consumables",m:0},
+  {r:"Pizza Dough",i:["Tomato Sauce","Dough"],s:"",c:"Food & Consumables",m:0},
+  {r:"Pizza",i:["Pizza Dough"],s:"Oven",c:"Food & Consumables",m:0},
+  {r:"Poisoned Drink",i:["Any Drink","Any Poison Source"],s:"",c:"Food & Consumables",m:0},
+  {r:"Poisoned Food",i:["Any Food","Any Poison Source"],s:"",c:"Food & Consumables",m:0},
+  {r:"Porridge",i:["Wheat","Milk"],s:"",c:"Food & Consumables",m:0},
+  {r:"Potato Porridge",i:["Potato","Milk"],s:"",c:"Food & Consumables",m:0},
+  {r:"Pumpkin Soup",i:["Pumpkin/Pumpkin Part/Pumpkin Peel"],s:"Any Cooking Station",c:"Food & Consumables",m:0},
+  {r:"Rivellon Fries",i:["Cold Fries"],s:"Boiling Pot",c:"Food & Consumables",m:0},
+  {r:"Source-Infused Meat",i:["Raw Mutto","Earth Essence","Source Orb"],s:"",c:"Food & Consumables",m:0},
+  {r:"Tainted Stew",i:["Meaty Stew","Any Void-Tainted Fish"],s:"Boiling Pot",c:"Food & Consumables",m:0},
+  {r:"Tomato Sauce",i:["Tomato","Any Hammer"],s:"",c:"Food & Consumables",m:0},
+  {r:"White Tea",i:["Teapot","White Tea Leaves"],s:"",c:"Food & Consumables",m:0},
+
+  // SEEDLINGS
+  {r:"Amadouvier Seedling",i:["Bucket/Clay-Filled Bucket","Amadouvier (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Amethyst Deceiver Seedling",i:["Bucket/Clay-Filled Bucket","Amethyst Deceiver"],s:"",c:"Seedlings",m:2},
+  {r:"Augmentor Seedling",i:["Bucket/Clay-Filled Bucket","Augmentor"],s:"",c:"Seedlings",m:2},
+  {r:"Boletus Seedling",i:["Bucket/Clay-Filled Bucket","Boletus (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Calocera Seedling",i:["Bucket/Clay-Filled Bucket","Calocera"],s:"",c:"Seedlings",m:2},
+  {r:"Chanterelle Seedling",i:["Bucket/Clay-Filled Bucket","Chanterelle"],s:"",c:"Seedlings",m:2},
+  {r:"Drudanae Seedling",i:["Bucket/Clay-Filled Bucket","Drudanae (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Farhangite Seedling",i:["Bucket/Clay-Filled Bucket","Farhangite (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Puffball Seedling",i:["Bucket/Clay-Filled Bucket","Puffball (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Tea Leaf Seedling",i:["Bucket/Clay-Filled Bucket","Tea Leaf (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Trumpet of Death Seedling",i:["Bucket/Clay-Filled Bucket","Trumpet of Death (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Whisperwood Seedling",i:["Bucket/Clay-Filled Bucket","Whisperwood (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Wizard Hat Agaric Seedling",i:["Bucket/Clay-Filled Bucket","Wizard Hat Agaric (Any)"],s:"",c:"Seedlings",m:2},
+  {r:"Yarrow Flower Seedling",i:["Bucket/Clay-Filled Bucket","Yarrow Flower (Any)"],s:"",c:"Seedlings",m:2},
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// APP STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let searchQuery = '';
+let categoryFilter = 'all';
+let searchMode = 'all'; // 'all' | 'result' | 'ingredient'
+let sortKey = 'result';
+let sortDir = 1;
+
+// Normalise data once
+const RECIPES = RAW.map((r, idx) => ({
+  id: idx,
+  result: r.r,
+  ingredients: r.i,
+  station: r.s || '',
+  category: r.c,
+  mod: r.m,
+  // searchable text
+  _result_lc: r.r.toLowerCase(),
+  _ing_lc: r.i.join(' ').toLowerCase(),
+  _all_lc: (r.r + ' ' + r.i.join(' ') + ' ' + (r.s||'')).toLowerCase(),
+}));
+
+const ALL_CATEGORIES = ['all', ...new Set(RECIPES.map(r => r.category))];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOM REFS
+// ─────────────────────────────────────────────────────────────────────────────
+const searchInput   = document.getElementById('searchInput');
+const clearBtn      = document.getElementById('clearBtn');
+const categorySelect= document.getElementById('categoryFilter');
+const modeAll       = document.getElementById('modeAll');
+const modeResult    = document.getElementById('modeResult');
+const modeIngredient= document.getElementById('modeIngredient');
+const statsText     = document.getElementById('statsText');
+const tableWrap     = document.getElementById('tableWrap');
+const showCrafters  = document.getElementById('showCrafters');
+const showHerb      = document.getElementById('showHerb');
+const groupCategory = document.getElementById('groupCategory');
+const groupIngredient = document.getElementById('groupIngredient');
+let isGroupByIngredient = false;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+function init() {
+  // Populate category dropdown
+  ALL_CATEGORIES.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat === 'all' ? 'All categories' : cat;
+    categorySelect.appendChild(opt);
+  });
+
+  // Events
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value.trim().toLowerCase();
+    clearBtn.style.display = searchQuery ? 'block' : 'none';
+    render();
+  });
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    clearBtn.style.display = 'none';
+    render();
+  });
+  categorySelect.addEventListener('change', () => {
+    categoryFilter = categorySelect.value;
+    render();
+  });
+
+  // ---> ADD THE NEW LISTENERS HERE <---
+  showCrafters.addEventListener('change', render);
+  showHerb.addEventListener('change', render);
+
+  groupCategory.addEventListener('click', () => {
+    groupCategory.classList.add('active');
+    groupIngredient.classList.remove('active');
+    isGroupByIngredient = false;
+    render();
+  });
+
+  groupIngredient.addEventListener('click', () => {
+    groupIngredient.classList.add('active');
+    groupCategory.classList.remove('active');
+    isGroupByIngredient = true;
+    render();
+  });
+
+  [modeAll, modeResult, modeIngredient].forEach(btn => {
+    btn.addEventListener('click', () => {
+      [modeAll, modeResult, modeIngredient].forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      searchMode = btn.id.replace('mode', '').toLowerCase();
+      render();
+    });
+  });
+
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FILTER
+// ─────────────────────────────────────────────────────────────────────────────
+function filterRecipes() {
+  const terms = searchQuery.split(' ').filter(t => t.length > 0);
+
+  return RECIPES.filter(recipe => {
+    if (!showCrafters.checked && recipe.mod === 1) return false;
+    if (!showHerb.checked && recipe.mod === 2) return false;
+    if (categoryFilter !== 'all' && recipe.category !== categoryFilter) return false;
+    if (terms.length === 0) return true;
+
+    return terms.every(term => {
+      if (searchMode === 'result')     return recipe._result_lc.includes(term);
+      if (searchMode === 'ingredient') return recipe._ing_lc.includes(term);
+      return recipe._all_lc.includes(term);
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HIGHLIGHT
+// ─────────────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function hl(text) {
+  if (!searchQuery) return escHtml(text);
+  const terms = searchQuery.split(' ').filter(t => t.length > 0);
+  let result = escHtml(text);
+  terms.forEach(term => {
+    const safe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    result = result.replace(new RegExp(`(${safe})`, 'gi'), '<mark>$1</mark>');
+  });
+  return result;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MOD BADGE
+// ─────────────────────────────────────────────────────────────────────────────
+function modBadge(mod) {
+  if (mod === 1) return ' <span class="badge badge-mod" title="Requires Crafter\'s Kit (Gift Bag #2)">*</span>';
+  if (mod === 2) return ' <span class="badge badge-herb" title="Requires Herb Garden (Gift Bag #2)">**</span>';
+  return '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+function render() {
+  const filtered = filterRecipes();
+
+// Group dynamically (by Category or Ingredient)
+  const groups = {};
+  const groupOrder = [];
+
+  if (isGroupByIngredient) {
+    // Reverse Lookup Mode
+    filtered.forEach(recipe => {
+      recipe.ingredients.forEach(ing => {
+        const ingName = ing.trim();
+        if (!groups[ingName]) {
+          groups[ingName] = [];
+          groupOrder.push(ingName);
+        }
+        groups[ingName].push(recipe);
+      });
+    });
+    groupOrder.sort(); // Sorts ingredients alphabetically
+  } else {
+    // Standard Mode
+    filtered.forEach(recipe => {
+      if (!groups[recipe.category]) {
+        groups[recipe.category] = [];
+        groupOrder.push(recipe.category);
+      }
+      groups[recipe.category].push(recipe);
+    });
+  }
+
+  // Stats
+  const total = RECIPES.length;
+  statsText.innerHTML = filtered.length === total
+    ? `Showing all <em>${total}</em> recipes across <em>${groupOrder.length}</em> categories`
+    : `Showing <em>${filtered.length}</em> of <em>${total}</em> recipes in <em>${groupOrder.length}</em> categories`;
+
+  // Empty state
+  if (filtered.length === 0) {
+    tableWrap.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚗</div>
+        <p>No recipes found for "<strong>${escHtml(searchInput.value)}</strong>"</p>
+        <p style="margin-top:0.5rem;font-size:0.85rem;">Try searching for a result, ingredient, or station.</p>
+      </div>`;
+    return;
+  }
+
+  // Build HTML
+  let html = '';
+  groupOrder.forEach(cat => {
+    const rows = groups[cat];
+
+    // 1. Find the maximum number of ingredients in this specific group
+    let maxIngs = 0;
+    rows.forEach(r => {
+      if (r.ingredients.length > maxIngs) maxIngs = r.ingredients.length;
+    });
+    if (maxIngs < 2) maxIngs = 2; // Always show at least 2 columns so it looks like a proper table
+
+    // 2. Generate the exact number of header columns needed
+    let ingHeaders = '';
+    for(let i = 1; i <= maxIngs; i++) {
+      ingHeaders += `<th>Ingredient ${i}</th>`;
+    }
+
+    html += `
+    <div class="category-section">
+      <div class="category-header">
+        <span class="category-title">${escHtml(cat)}</span>
+        <span class="category-count">${rows.length} recipe${rows.length !== 1 ? 's' : ''}</span>
+        <div class="category-line"></div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28%">Result</th>
+            ${ingHeaders}
+            <th style="width:16%">Station</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+    rows.forEach(recipe => {
+      // 3. Generate a dedicated cell for each ingredient
+      let ingCells = '';
+      for(let i = 0; i < maxIngs; i++) {
+        // If an ingredient exists for this column, highlight it. Otherwise, leave the cell blank.
+        const ingText = recipe.ingredients[i] ? hl(recipe.ingredients[i]) : '';
+        ingCells += `<td class="ingredient-cell">${ingText}</td>`;
+      }
+
+      html += `
+          <tr>
+            <td class="result-cell">${hl(recipe.result)}${modBadge(recipe.mod)}</td>
+            ${ingCells}
+            <td class="station-cell">${recipe.station ? hl(recipe.station) : ''}</td>
+          </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  });
+
+  tableWrap.innerHTML = html;
+}
+
+init();
+</script>
+</body>
+</html>
